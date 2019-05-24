@@ -1,0 +1,95 @@
+<html>
+  <head>
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="jquery-3.2.1.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['line', 'corechart']});
+
+
+    function drawChart() {
+    var a1 = document.getElementById("a1").value
+    var a2 = document.getElementById("a2").value
+    a1 = a1.split(" ")
+    a2 = a2.split(" ")
+      var button = document.getElementById('change-chart');
+      var chartDiv = document.getElementById('chart_div');
+      var Rows_a1 = [0]
+      var Rows_a2 = [1]
+      var data = new google.visualization.DataTable();
+      data.addColumn('number','Ось')
+      for(i=0;i< a1.length && i< a2.length;i++){
+        data.addColumn('number','B'+(i+1))
+        Rows_a1.push(+a1[i])
+        Rows_a2.push(+a2[i])
+    }
+      data.addRows([Rows_a1,Rows_a2])
+
+      var classicOptions = {
+        title: 'График',
+        width: 900,
+        height: 500,
+        // Gives each series an axis that matches the vAxes number below.
+        series: {
+          0: {targetAxisIndex: 0},
+        },
+        vAxes: {
+          // Adds titles to each axis.
+          0: {title: 'a1'},
+        },
+        hAxis: {
+          ticks: [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1],
+        },
+
+      };
+      var classicChart = new google.visualization.LineChart(chartDiv);
+        classicChart.draw(data, classicOptions);
+
+    }
+    function calcul(){
+      var V = +document.getElementById("V*").value;
+      var a1 = document.getElementById("a1_calc").value;
+      var a2 = document.getElementById("a2_calc").value;
+      var a11 = document.getElementById("a1").value;
+      var a12 = document.getElementById("a2").value;
+      var p1,p2;
+      var q1,q2;
+      a1 = a1.split(" ");
+      a2 = a2.split(" ");
+      a11 = a11.split(" ");
+      a12 = a12.split(" ");
+
+      var X = [], Y = [];
+      p1 = ((V-a2[0])/(a1[0]-a2[0])).toFixed(2);
+      p2 = (1-p1).toFixed(2);
+      q1 = ((V-a1[1])/(a1[0]-a1[1])).toFixed(2)
+      q2 = (1-q1).toFixed(2);
+      while(X.length < a1.length && X.length < a2.length){X.push(0);Y.push(0)}
+
+      console.log("p=","(",p1,",",p2,")");
+      console.log("q=","(",q1,",",q2,")");
+
+      $("#p_q").append("<br>p= "+p1+"; "+p2+"<br>"+"q= "+q1+"; "+q2)
+    }
+    </script>
+  </head>
+
+  <body>
+    Введите через пробел значения стратегий 
+    <table border="1px">
+      <tr><td>a1</td><td><input type="text" id="a1"></td></tr>
+      <tr><td>a2</td><td><input type="text" id="a2"></td></tr>
+    </table><br>
+    <button id="a1" onclick="drawChart()">График</button>
+    <br><br>
+    <div id="chart_div"></div>
+    Введите примерную V* и чистые стратегии выбранных c графика<br>
+    <table border="1px">
+      <tr><td>V*</td><td><input type="text" id="V*"></td></tr>
+      <tr><td>a1</td><td><input type="text" id="a1_calc"></td></tr>
+      <tr><td>a2</td><td><input type="text" id="a2_calc"></td></tr>
+    </table><br>
+    <button onclick="calcul()">Расчитать p и q</button>
+    <output id="p_q"></output>
+  </body>
+</html>
